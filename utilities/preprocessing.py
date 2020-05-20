@@ -2,11 +2,7 @@ from os.path import abspath, dirname
 from re import split
 from itertools import chain
 from typing import List
-
-"""
-TODO: 1) lemmatization
-      2) improve tokenization
-"""      
+import scripts.Lemmatizer as lt
 
 parent_directory = dirname(dirname(abspath(__file__)))
 stopwords_path = parent_directory + "/resources/hindi_stopwords.txt"
@@ -16,9 +12,25 @@ with open(stopwords_path) as f:
 SentTok = List[str]
 
 def get_sentences(text: str):
+    """
+    Returns a list of sentences in source text.
+
+    Input(s):
+    1) text - Original source text.
+    """
     return split(r'[\|।॥!\?]', text)
 
 def get_tokens(text: str):
+    """
+    Returns all tokens from text.
+
+    Input(s):
+    1) text - Original source text.
+
+    Output(s):
+    1) tokens - List containing all tokens grouped by sentences.
+    2) List containing all tokens.
+    """
     sentences = get_sentences(text)
     tokens = []
     for line in sentences:
@@ -27,6 +39,16 @@ def get_tokens(text: str):
     return tokens, list(chain.from_iterable(tokens))
 
 def clean(tokens: List[str]):
+    """
+    Returns a list of unique tokens without any stopwords.
+
+    Input(s):
+    1) tokens - List containing all tokens.
+
+    Output(s):
+    1) unique_tokens - List of unique tokens with all stopwords
+                       removed.
+    """
     unique_tokens = list(set(tokens))
     for word in unique_tokens:
         if word in hindi_stopwords:
@@ -34,20 +56,46 @@ def clean(tokens: List[str]):
     return unique_tokens
 
 def lemmatize_tokens(tokens: List[str]=None, tokens_per_sentence: List[SentTok]=None):
-    #in progress
+    """
+    Lemmatizes tokens.
+
+    Input(s):
+    1) tokens - Optional argument; Contains a 1d list of tokens.
+    2) tokens_per_sentence - Optional argument; Contains a 2d list of all
+                             tokens grouped by sentence.
+
+    Output(s):
+    1) Lemmas: Either a 1d list containing all Lemmas or a 2d list
+               containing Lemmas grouped by sentence.
+    """
+    Lemmas = []
     if tokens:
-        pass
+        Lemmas.append(lt.lemmatize(tokens))
     if tokens_per_sentence:
-        pass
-    return lemmatized_tokens
+        for sentence in toketokens_per_sentence:
+            Lemmas.append(lt.lemmatize(sentence))
+    return Lemmas
 
 def preprocess(text: str):
-    sentences = split_sentences(text)
+    """
+    Handles all the preprocessing required for ranking and scoring.
+
+    Argument(s):
+    1) text - The original body of text.
+
+    Output(s):
+    1) sentences - List of all sentences in original text.
+    2) lemmatized_tokens - All unique, lemmatized tokens without
+                           any stopwords.
+    3) lemmatized_token_sentences - All unique, lemmatized tokens,
+                                    grouped by sentence.
+    """
+    sentences = get_sentences(text)
     tokens_per_sentence, original_tokens = get_tokens(text)
     
     cleaned_tokens = clean(original_tokens)
 
     lemmatized_tokens = lemmatize(cleaned_tokens)
-    lemmatized_token_sentences = lemmatize(tokens_per_sentence) #polymorphic function
+    lemmatized_token_sentences = lemmatize(tokens_per_sentence)
 
     return sentences, lemmatized_tokens, lemmatized_token_sentences
