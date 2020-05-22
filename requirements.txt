@@ -10,12 +10,14 @@ more-itertools==8.2.0
 packaging==20.3
 pluggy==0.13.1
 py==1.8.1
+pycld3==0.20
 pycodestyle==2.5.0
 pydantic==1.4
 pyparsing==2.4.7
 pytest==5.4.1
 six==1.14.0
 starlette==0.13.2
+tinydb==4.1.1
 uvicorn==0.11.3
 uvloop==0.14.0
 wcwidth==0.1.9
