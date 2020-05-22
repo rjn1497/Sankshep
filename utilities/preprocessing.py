@@ -1,7 +1,7 @@
 from os.path import abspath, dirname
 from re import split
 from typing import List
-import scripts.Lemmatizer as lt
+from .scripts import Lemmatizer as lt
 
 
 parent_directory = dirname(dirname(abspath(__file__)))

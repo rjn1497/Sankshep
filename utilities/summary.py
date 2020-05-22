@@ -1,5 +1,5 @@
-from preprocessing import preprocess
-from scoring import get_sentence_ranks
+from .preprocessing import preprocess
+from .scoring import get_sentence_ranks
 
 def Summary(text: str, percentage: float=None, abstractive: bool=False):
     """
