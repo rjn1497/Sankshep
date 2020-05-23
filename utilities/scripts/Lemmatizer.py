@@ -100,7 +100,7 @@ def lemmatize(tokens: List[str]):
             else:
                 similarity_score = 0.0
                 for lemma in options["words"]:
-                    temp = similarity(bigrams, lemma["bigrams"])
+                    temp = similarity(bigrams, words[lemma])
                     similarity_score = temp if (temp > similarity_score) else similarity_score
     
                 if round(similarity_score):
