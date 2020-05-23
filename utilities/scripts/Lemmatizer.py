@@ -1,5 +1,5 @@
 from os.path import dirname, abspath
-from tinydb import TinyDB, Query, where
+from tinydb import TinyDB, where
 from typing import List
 
 
@@ -91,18 +91,23 @@ def lemmatize(tokens: List[str]):
     lemma_list = []
     for token in tokens:
         bigrams = get_character_ngrams(token, 2)
-        options = db.search(where('letter') == token[0])[0]
-        if token in options["words"]:
-            lemma_list.append(token)
-        else:
-            similarity_score = 0.0
-            for lemma in options["words"]:
-                temp = similarity(bigrams, lemma["bigrams"])
-                similarity_score = temp if (temp > similarity_score) else similarity_score
+        options = db.search(where('letter') == token[0])
+        options = options[0] if options else options
 
-            if round(similarity_score):
-                lemma_list.append(lemma)
-            else:
+        if options:
+            if token in options["words"]:
                 lemma_list.append(token)
+            else:
+                similarity_score = 0.0
+                for lemma in options["words"]:
+                    temp = similarity(bigrams, lemma["bigrams"])
+                    similarity_score = temp if (temp > similarity_score) else similarity_score
+    
+                if round(similarity_score):
+                    lemma_list.append(lemma)
+                else:
+                    lemma_list.append(token)
+        else:
+            lemma_list.append(token)
 
         return lemma_list
