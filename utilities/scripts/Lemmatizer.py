@@ -6,7 +6,7 @@ from typing import List
 parent_directory = dirname(dirname(abspath(__file__)))
 lemmas_path = parent_directory + "/resources/lemmas.json"
 
-db = TinyDB('lemmas_path')
+db = TinyDB(lemmas_path)
 
 def get_character_ngrams(token: str, n: int):
     """
