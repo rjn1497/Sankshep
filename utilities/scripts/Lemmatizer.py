@@ -3,7 +3,7 @@ from tinydb import TinyDB, where
 from typing import List
 
 
-parent_directory = dirname(dirname(abspath(__file__)))
+parent_directory = dirname(dirname(dirname(abspath(__file__))))
 lemmas_path = parent_directory + "/resources/lemmas.json"
 
 db = TinyDB(lemmas_path)
