@@ -1,4 +1,8 @@
 import pytest
+from os.path import dirname, abspath
+import sys
+sys.path.insert(1, dirname(dirname(abspath(__file__))))
+from utilities.scoring import *
 
 class ScoringTest:
     raw_sentences = []

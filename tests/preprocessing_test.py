@@ -1,9 +1,13 @@
 import pytest
+from os.path import dirname, abspath
+import sys
+sys.path.insert(1, dirname(dirname(abspath(__file__))))
+from utilities.preprocessing import *
 
 
 class PreprocessingTest:
-    source_text_1 = """"""
-    source_text_2 = """"""
+    source_text_1 = ""
+    source_text_2 = ""
     raw_tokens = []
 
     def test_get_paragraphs(self):

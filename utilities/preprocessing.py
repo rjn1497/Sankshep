@@ -1,6 +1,8 @@
 from os.path import abspath, dirname
 from re import split
 from typing import List
+import sys
+sys.path.insert(1, dirname(abspath(__file__)))
 import scripts.Lemmatizer as lt
 
 
