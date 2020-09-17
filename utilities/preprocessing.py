@@ -1,6 +1,6 @@
 from os.path import abspath, dirname
 from re import split
-from typing import List
+from typing import List, Tuple, Union
 import sys
 sys.path.insert(1, dirname(abspath(__file__)))
 import scripts.Lemmatizer as lt
@@ -14,7 +14,7 @@ with open(stopwords_path) as f:
 
 SentTok = List[str]
 
-def get_paragraphs(text: str):
+def get_paragraphs(text: str) -> List[str]:
     """
     Returns a list containing all paragraphs.
 
@@ -32,7 +32,7 @@ def get_paragraphs(text: str):
 
     return paragraphs
 
-def get_sentences(text: str):
+def get_sentences(text: str) -> List[str]:
     """
     Returns a list of sentences in source text.
 
@@ -47,7 +47,7 @@ def get_sentences(text: str):
 
     return [i for i in sentences if i != '']
 
-def get_tokens(text: str):
+def get_tokens(text: str) -> Tuple(List[SentTok], List[str]):
     """
     Returns all tokens from text.
 
@@ -67,7 +67,7 @@ def get_tokens(text: str):
 
     return tokens, sum(tokens, [])
 
-def clean(tokens: List[str]):
+def clean(tokens: List[str]) -> List[str]:
     """
     Returns a list of unique tokens without any stopwords.
 
@@ -88,7 +88,10 @@ def clean(tokens: List[str]):
 
     return unique_tokens
 
-def lemmatize_tokens(tokens: List[str]=None, tokens_per_sentence: List[SentTok]=None):
+def lemmatize_tokens(
+    tokens: List[str]=None,
+    tokens_per_sentence: List[SentTok]=None
+    ) -> Union[List[str], List[SentTok]]:
     """
     Lemmatizes tokens.
 
@@ -111,7 +114,10 @@ def lemmatize_tokens(tokens: List[str]=None, tokens_per_sentence: List[SentTok]=
 
     return Lemmas
 
-def preprocess(text: str):
+def preprocess(text: str) -> Tuple(
+    List[str], List[str],
+    List[str], List[SentTok]
+    ):
     """
     Handles all the preprocessing required for ranking and scoring.
 
@@ -134,7 +140,7 @@ def preprocess(text: str):
     
     cleaned_tokens = clean(original_tokens)
 
-    lemmatized_tokens = lemmatize(cleaned_tokens)
-    lemmatized_token_sentences = lemmatize(tokens_per_sentence)
+    lemmatized_tokens = lemmatize_tokens(tokens=cleaned_tokens)
+    lemmatized_token_sentences = lemmatize_tokens(tokens_per_sentence=tokens_per_sentence)
 
     return paragraphs, sentences, lemmatized_tokens, lemmatized_token_sentences

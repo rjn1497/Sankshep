@@ -1,11 +1,11 @@
-from typing import List
+from typing import List, Dict, Tuple
 from collections import Counter
 from math import log
 
 
 SentList = List[str]
 
-def get_tf(sentences: List[SentList]):
+def get_tf(sentences: List[SentList]) -> Dict[str, float]:
     """
     Returns a dictionary containing the (normalised frequencies) of all
     tokens in source text.
@@ -26,7 +26,7 @@ def get_tf(sentences: List[SentList]):
 
     return frequencies
 
-def get_idf(paragraphs: List[str], tokens: List[str]):
+def get_idf(paragraphs: List[str], tokens: List[str]) -> Dict[str, float]:
     """
     Returns a dictionary containing the Inverse Document Freqeuencies
     of all tokens in the original text.
@@ -49,7 +49,7 @@ def get_idf(paragraphs: List[str], tokens: List[str]):
 def get_sentence_ranks(sentences: List[str], 
     tokens_per_sentence: List[SentList], 
     paragraphs: List[str], 
-    tokens: List[str]):
+    tokens: List[str]) -> List[Tuple(int, str)]:
     """
     Returns a list of sentences, ordered by importance.
 
@@ -61,8 +61,8 @@ def get_sentence_ranks(sentences: List[str],
     4) tokens - List of all unique, important tokens.
 
     Output(s):
-    1) sentences - List containing sentences and their ranks sorted
-                   in descending order by rank.
+    1) sentences - List containing sentences and their ranks (as tuples)
+                   sorted in descending order by rank.
     """
 
     tf = get_tf(tokens_per_sentence)

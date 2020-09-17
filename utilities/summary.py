@@ -1,7 +1,10 @@
 from preprocessing import preprocess
 from scoring import get_sentence_ranks
 
-def Summary(text: str, percentage: float=None, abstractive: bool=False):
+def Summary(
+    text: str, percentage: float=None,
+    abstractive: bool=False
+    ) -> str:
     """
     Returns a summary of original text.
 
