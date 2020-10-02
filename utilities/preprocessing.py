@@ -47,7 +47,7 @@ def get_sentences(text: str) -> List[str]:
 
     return [i for i in sentences if i != '']
 
-def get_tokens(text: str) -> Tuple(List[SentTok], List[str]):
+def get_tokens(text: str) -> Tuple[List[SentTok], List[str]]:
     """
     Returns all tokens from text.
 
@@ -63,6 +63,7 @@ def get_tokens(text: str) -> Tuple(List[SentTok], List[str]):
     tokens = []
     for line in sentences:
         temp = split(r'[\s,;]', line)
+        temp = list(filter(lambda x: x != "", temp))
         tokens.append(temp)
 
     return tokens, sum(tokens, [])
@@ -82,9 +83,12 @@ def clean(tokens: List[str]) -> List[str]:
     # handle alphanumeric strings
 
     unique_tokens = list(set(tokens))
-    for word in unique_tokens:
+    for pos in range(len(unique_tokens)):
+        word = unique_tokens[pos]
         if word in hindi_stopwords:
-            unique_tokens.pop(word)
+            unique_tokens[pos] = None
+    unique_tokens = [word for word in unique_tokens if word]
+    unique_tokens = list(filter(lambda x: x != "", unique_tokens))
 
     return unique_tokens
 
@@ -107,17 +111,17 @@ def lemmatize_tokens(
 
     Lemmas = []
     if tokens:
-        Lemmas.append(lt.lemmatize(tokens))
+        Lemmas = lt.lemmatize(tokens)
     if tokens_per_sentence:
-        for sentence in toketokens_per_sentence:
+        for sentence in tokens_per_sentence:
             Lemmas.append(lt.lemmatize(sentence))
 
     return Lemmas
 
-def preprocess(text: str) -> Tuple(
+def preprocess(text: str) -> Tuple[
     List[str], List[str],
     List[str], List[SentTok]
-    ):
+    ]:
     """
     Handles all the preprocessing required for ranking and scoring.
 

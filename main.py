@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from cld3 import get_language
 from utilities.summary import Summary
 
-
 app = FastAPI()
 
 class TextSummary(BaseModel):

@@ -2,12 +2,15 @@ from os.path import dirname, abspath
 from tinydb import TinyDB, where
 from typing import List
 from distance import levenshtein
+from jellyfish import jaro_winkler_similarity
+from functools import lru_cache
 
 parent_directory = dirname(dirname(dirname(abspath(__file__))))
 lemmas_path = parent_directory + "/resources/lemmas.json"
 
 db = TinyDB(lemmas_path)
 
+@lru_cache(maxsize=300)
 def get_character_ngrams(token: str, n: int):
     """
     Returns character n-grams for given words.
@@ -73,6 +76,7 @@ def similarity(set1: List[str], set2: List[str]):
 
     return score
 
+@lru_cache(maxsize=300)
 def get_distance(str1: str, str2: str) -> int:
     """
     Uses Levenshtein Distance
@@ -84,6 +88,7 @@ def get_distance(str1: str, str2: str) -> int:
 
     return levenshtein(str1, str2)
 
+@lru_cache(maxsize=300)
 def generate_stem_words(word):
         suffixes = {
         1: [u"ो",u"े",u"ू",u"ु",u"ी",u"ि",u"ा"],
@@ -100,7 +105,6 @@ def generate_stem_words(word):
                         #print 'h'
                         return word[:-L]
         return word
-
 
 
 def lemmatize(tokens: List[str]):
@@ -136,21 +140,22 @@ def lemmatize(tokens: List[str]):
                         candidates.append(lemma)
                     else:
                         pass
-                    count += 1
                 similarity_score = 0.0
+                jw_similarity_score = 0.0
                 add = ""
                 for i in candidates:
                     cand_big = options["words"][i]
                     temp = similarity(bigrams, cand_big)
-                    if (temp > similarity_score):
+                    temp_jw = jaro_winkler_similarity(token, i)
+                    if (temp > similarity_score) and (temp_jw > jw_similarity_score):
                         similarity_score = temp
+                        jw_similarity_score = temp_jw
                         add = i
-                    else:
-                        pass
-                lemma_list.append(add)
+                if round(similarity_score) == 1:
+                    lemma_list.append(add)  
+                else:
+                    lemma_list.append(token)      
         else:
             lemma_list.append(token)
 
-    return lemma_list
-
-print(lemmatize(["अंगड़ाईयाँ", "बूँदें"]))
+    return list(zip(tokens, lemma_list))

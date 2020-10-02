@@ -40,16 +40,23 @@ def get_idf(paragraphs: List[str], tokens: List[str]) -> Dict[str, float]:
     """
 
     documents = len(paragraphs)
-    idf_dict = {token:
-     log(float(documents)/(sum(token in para for para in paragraphs)))
-     for token in tokens}
+    #idf_dict = {token:
+    # log(float(documents)/len([token[0] in para for para in paragraphs]))
+    # for token in tokens}
+    idf_dict = {}
+    for token in tokens:
+        c = 1
+        for para in paragraphs:
+            if token[0] in para:
+                c += 1
+            idf_dict[token] = log(documents/float(c))
 
     return idf_dict
 
 def get_sentence_ranks(sentences: List[str], 
     tokens_per_sentence: List[SentList], 
     paragraphs: List[str], 
-    tokens: List[str]) -> List[Tuple(int, str)]:
+    tokens: List[str]) -> List[Tuple[int, str]]:
     """
     Returns a list of sentences, ordered by importance.
 

@@ -1,6 +1,8 @@
-from preprocessing import preprocess
+from .preprocessing import preprocess
 from scoring import get_sentence_ranks
+from functools import lru_cache
 
+@lru_cache(maxsize=100)
 def Summary(
     text: str, percentage: float=None,
     abstractive: bool=False
@@ -32,11 +34,12 @@ def Summary(
         count = 1 if (count < 1) else count
         
         for c in range(count):
-            summary += f"{ranked_sents[i][1]} "
+            summary += f"{ranked_sents[c][1]} "
     else:
-        threshold = sum([sc for (sc, sent) in ranked_sents])/len(scores)
+        threshold = sum([sc for (sc, sent) in ranked_sents])/len(ranked_sents)
         for sent in ranked_sents:
             if sent[0] > threshold:
                 summary += f"{sent[1]} "
+        percentage = 100 - ((len(summary)/len(text)) * 100)
 
-    return summary.strip()
+    return summary.strip(), percentage
